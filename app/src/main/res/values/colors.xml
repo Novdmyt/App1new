@@ -1,0 +1,15 @@
+<resources>
+    <color name="md_primary">#4F46E5</color>
+    <color name="md_on_primary">#FFFFFF</color>
+    <color name="md_bg">#FFF7FB</color>
+    <color name="blue">#4BA3E3</color>
+    <color name="yellow">#F2C048</color>
+    <color name="red">#EF4B4B</color>
+    <color name="green">#37B07E</color>
+    <color name="text">#2B2B2B</color>
+    <color name="md_success">#C8E6C9</color>  <!-- м’ятний/зелений -->
+    <color name="md_error">#FFCDD2</color>
+    <color name="teal_700">#AF2882</color>    <!-- рожево-червоний -->
+
+
+</resources>

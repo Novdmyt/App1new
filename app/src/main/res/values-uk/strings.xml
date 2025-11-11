@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">EasyLearnLanguage</string>
+
+    <!-- Головне меню -->
+    <string name="title_new_group">Нова група</string>
+    <string name="title_play">Грати</string>
+    <string name="title_new_words">Нові слова</string>
+    <string name="title_correct">Коригувати</string>
+
+    <!-- Налаштування -->
+    <string name="settings">Налаштування</string>
+    <string name="lang">Мова</string>
+    <string name="theme">Тема</string>
+    <string name="system_default">Як у системі</string>
+    <string name="english">English</string>
+    <string name="ukrainian">Українська</string>
+    <string name="german">Deutsch</string>
+    <string name="dark_mode">Темна тема</string>
+    <string name="restart_hint">Зміни застосовуються одразу</string>
+    <string name="add_word">Додати слово</string>
+    <string name="word_front">Слово / речення</string>
+    <string name="word_back">Переклад</string>
+    <string name="group_deleted">Групу видалено</string>
+    <string name="undo">Скасувати</string>
+    <string name="lang_from">Мова слова</string>
+    <string name="lang_to">Мова перекладу</string>
+    <string name="play_settings">Тренування</string>
+    <string name="tts_voice">Мова озвучки</string>
+    <string name="voice_english">Англійська</string>
+    <string name="voice_german">Німецька</string>
+    <string name="voice_french">Французька</string>
+
+    <string name="choices_count">Кількість варіантів</string>
+    <string name="choices_3">3</string>
+    <string name="choices_4">4</string>
+    <string name="choices_5">5</string>
+    <string name="choices_6">6</string>
+    <string name="correct">Вірно!</string>
+    <string name="incorrect">Спробуй ще</string>
+
+
+    <string name="need_more_words">Потрібно щонайменше %1$d слів, зараз %2$d</string>
+    <string name="add_word1">Додати слова</string>
+
+
+    <string name="coming_soon">В розробці</string>
+    <!-- Додавання групи: вибір кольору -->
+    <string name="color">Колір</string>
+    <string name="color_none">Без кольору</string>
+    <string name="color_blue">Синій</string>
+    <string name="color_yellow">Жовтий</string>
+    <string name="color_red">Червоний</string>
+    <string name="color_green">Зелений</string>
+</resources>

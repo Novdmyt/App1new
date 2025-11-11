@@ -1,0 +1,54 @@
+<resources>
+    <string name="app_name">EasyLearnLanguage</string>
+    <string name="title_new_group">New Group</string>
+    <string name="title_play">Play</string>
+    <string name="title_new_words">New Words</string>
+    <string name="title_correct">Correct</string>
+    <string name="settings">Setting</string>
+    <string name="lang">Language</string>
+    <string name="theme">Theme</string>
+    <string name="system_default">System default</string>
+    <string name="english">English</string>
+    <string name="ukrainian">Українська</string>
+    <string name="german">Deutsch</string>
+    <string name="dark_mode">Dark mode</string>
+    <string name="restart_hint">Changes apply instantly</string>
+    <string name="add_word">Add word</string>
+    <string name="word_front">Word / sentence</string>
+    <string name="word_back">Translation</string>
+    <string name="group_deleted">Group deleted</string>
+    <string name="undo">Undo</string>
+    <string name="lang_from">Word language</string>
+    <string name="lang_to">Translation language</string>
+    <string name="play_settings">Training</string>
+    <string name="tts_voice">Audio voice</string>
+    <string name="voice_english">English</string>
+    <string name="voice_german">German</string>
+    <string name="voice_french">French</string>
+
+    <string name="need_more_words">Потрібно щонайменше %1$d слів, зараз %2$d</string>
+    <string name="add_word1">Додати слова</string>
+
+    <string name="choices_count">Choices count</string>
+    <string name="choices_3">3</string>
+    <string name="choices_4">4</string>
+    <string name="choices_5">5</string>
+    <string name="choices_6">6</string>
+    <string name="correct">Correct!</string>
+    <string name="incorrect">Try again</string>
+
+
+
+
+
+    <string name="coming_soon">В розробці</string>
+
+
+    <string name="color">Color</string>
+    <string name="color_none">No color</string>
+    <string name="color_blue">Blue</string>
+    <string name="color_yellow">Yellow</string>
+    <string name="color_red">Red</string>
+    <string name="color_green">Green</string>
+
+</resources>

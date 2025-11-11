@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Базова тема застосунку -->
+    <style name="Base.Theme.EasyLearnLanguage" parent="Theme.Material3.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/md_primary</item>
+        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorSurface</item>
+
+        <!-- Щоб не було чорного “бліку” під час оновлення активності -->
+        <item name="android:windowBackground">@color/md_bg</item>
+        <item name="colorSurface">@color/md_bg</item>
+        <item name="android:windowDisablePreview">true</item>
+    </style>
+
+    <!-- Тема, яку підключено в Manifest -->
+    <style name="Theme.EasyLearnLanguage" parent="Base.Theme.EasyLearnLanguage"/>
+</resources>

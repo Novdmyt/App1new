@@ -1,0 +1,6 @@
+<resources>
+    <dimen name="screen_padding">20dp</dimen>
+    <dimen name="tile_radius">24dp</dimen>
+    <dimen name="tile_height">140dp</dimen>
+    <dimen name="tile_spacing">16dp</dimen>
+</resources>
