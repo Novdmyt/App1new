@@ -25,7 +25,5 @@ public class Prefs {
     public void setTtsLang(String tag){ sp.edit().putString("tts_lang", tag).apply(); }
     public String getTtsLang(){ return sp.getString("tts_lang", "en"); }
 
-    // --- Play choices count (3..6) ---
-    public void setPlayChoices(int n){ sp.edit().putInt("play_choices", n).apply(); }
-    public int getPlayChoices(){ return sp.getInt("play_choices", 4); }
+    // НЕТ: setPlayChoices/getPlayChoices — удалены
 }

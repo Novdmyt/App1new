@@ -50,5 +50,15 @@
     <string name="color_yellow">Yellow</string>
     <string name="color_red">Red</string>
     <string name="color_green">Green</string>
+    <string name="title_mode_select">Mode selection</string>
+    <string name="practice">Practical</string>
+    <string name="training">Teaching</string>
+    <string name="show_translation">Show translation</string>
+    <string name="next">Further</string>
+    <string name="tap_to_listen">Tap to listen</string>
+    <string name="restart">Newly</string>
+    <string name="shuffle">Stir</string>
+    <string name="done">Done!</string>
+    <string name="title_groups">Goup</string>
 
 </resources>

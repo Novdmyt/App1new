@@ -3,89 +3,62 @@ package com.example.easylearnlanguage.ui.play;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.easylearnlanguage.R;
-import com.google.android.material.button.MaterialButton;
 
 import java.util.ArrayList;
 import java.util.List;
 
-class ChoiceAdapter extends RecyclerView.Adapter<ChoiceAdapter.Holder> {
+public class ChoiceAdapter extends RecyclerView.Adapter<ChoiceAdapter.VH> {
 
-    interface OnChoice {
+    public interface OnChoiceClick {
         void onClick(int position, String text);
     }
 
-    private final OnChoice cb;
     private final List<String> items = new ArrayList<>();
-
+    private final OnChoiceClick onClick;
     private int correctIndex = -1;
-    private int chosenIndex  = -1;
-    private boolean locked   = false;
 
-    ChoiceAdapter(OnChoice cb){ this.cb = cb; }
+    public ChoiceAdapter(OnChoiceClick onClick) {
+        this.onClick = onClick;
+    }
 
-    void submit(List<String> data){
+    public void submit(List<String> choices) {
         items.clear();
-        if (data != null) items.addAll(data);
-        // новий раунд — скидаємо стан
-        correctIndex = -1;
-        chosenIndex  = -1;
-        locked       = false;
+        if (choices != null) items.addAll(choices);
         notifyDataSetChanged();
     }
 
-    void setCorrectIndex(int idx){ this.correctIndex = idx; }
-
-    void reveal(int chosen, int correct){
-        this.chosenIndex  = chosen;
-        this.correctIndex = correct;
-        this.locked       = true;
-        notifyDataSetChanged();
+    public void setCorrectIndex(int idx) {
+        this.correctIndex = idx;
     }
 
-    @NonNull @Override public Holder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    @NonNull
+    @Override
+    public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_choice, parent, false);
-        return new Holder(v);
+        return new VH(v);
     }
 
-    @Override public void onBindViewHolder(@NonNull Holder h, int pos) {
+    @Override
+    public void onBindViewHolder(@NonNull VH h, int pos) {
         String text = items.get(pos);
         h.btn.setText(text);
-
-        // дефолтний стан
-        h.btn.setEnabled(!locked);
-        h.btn.setBackgroundTintList(null); // ок — null дозволено
-        // ВАЖЛИВО: не викликати setTextColor(null) — це NPE
-
-        if (locked && correctIndex >= 0) {
-            if (pos == correctIndex) {
-                h.btn.setBackgroundTintList(
-                        ContextCompat.getColorStateList(h.btn.getContext(), R.color.teal_700));
-            } else if (pos == chosenIndex) {
-                h.btn.setBackgroundTintList(
-                        ContextCompat.getColorStateList(h.btn.getContext(), R.color.red));
-            } else {
-                h.btn.setEnabled(false);
-            }
-        }
-
-        h.btn.setOnClickListener(v -> {
-            if (locked) return;
-            if (cb != null) cb.onClick(h.getBindingAdapterPosition(), text);
-        });
+        h.btn.setOnClickListener(v -> onClick.onClick(h.getAdapterPosition(), text));
+        // дизайна не касаемся: без подсветок/цветов ответа
     }
 
-    @Override public int getItemCount(){ return items.size(); }
+    @Override
+    public int getItemCount() { return items.size(); }
 
-    static class Holder extends RecyclerView.ViewHolder {
-        final MaterialButton btn;
-        Holder(@NonNull View itemView) {
+    static class VH extends RecyclerView.ViewHolder {
+        Button btn;
+        VH(@NonNull View itemView) {
             super(itemView);
             btn = itemView.findViewById(R.id.btn_choice);
         }

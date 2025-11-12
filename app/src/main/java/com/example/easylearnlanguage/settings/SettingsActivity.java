@@ -34,7 +34,7 @@ public class SettingsActivity extends AppCompatActivity {
         );
 
         // ---------------------------
-        // 1) Мова інтерфейсу
+        // 1) Language (UI)
         // ---------------------------
         dropLang = findViewById(R.id.drop_lang);
 
@@ -69,7 +69,7 @@ public class SettingsActivity extends AppCompatActivity {
         });
 
         // ---------------------------
-        // 2) Мова озвучки (TTS)
+        // 2) Audio voice (TTS)
         // ---------------------------
         MaterialAutoCompleteTextView dropTts = findViewById(R.id.drop_tts_voice);
 
@@ -89,27 +89,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         dropTts.setOnItemClickListener((p, v, pos, id) -> prefs.setTtsLang(voiceTags[pos]));
 
-        // ---------------------------
-        // 3) Кількість варіантів у грі
-        // ---------------------------
-        MaterialAutoCompleteTextView dropChoices = findViewById(R.id.drop_choices);
-
-        String[] choiceLabels = new String[] {
-                getString(R.string.choices_3),
-                getString(R.string.choices_4),
-                getString(R.string.choices_5),
-                getString(R.string.choices_6)
-        };
-        int[] choiceValues = new int[] { 3, 4, 5, 6 };
-
-        dropChoices.setSimpleItems(choiceLabels);
-
-        int savedChoices = prefs.getPlayChoices();
-        int cIdx = 1; // дефолт 4
-        for (int i = 0; i < choiceValues.length; i++) if (choiceValues[i] == savedChoices) { cIdx = i; break; }
-        dropChoices.setText(choiceLabels[cIdx], false);
-
-        dropChoices.setOnItemClickListener((p, v, pos, id) -> prefs.setPlayChoices(choiceValues[pos]));
+        // ВАЖНО: блока "Choices count" больше нет
     }
 
     private void restartWithoutAnimation() {

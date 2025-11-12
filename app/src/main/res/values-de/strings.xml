@@ -46,5 +46,15 @@
     <string name="color_yellow">Gelb</string>
     <string name="color_red">Rot</string>
     <string name="color_green">Grün</string>
+    <string name="title_mode_select">Modusauswahl</string>
+    <string name="practice">Üben</string>
+    <string name="training">Lehre</string>
+    <string name="show_translation">Übersetzung anzeigen</string>
+    <string name="next">Weiter</string>
+    <string name="tap_to_listen">Zum Anhören tippen</string>
+    <string name="restart">Neu</string>
+    <string name="shuffle">Aufsehen</string>
+    <string name="done">Erledigt!</string>
+    <string name="title_groups">Goupe</string>
 
 </resources>

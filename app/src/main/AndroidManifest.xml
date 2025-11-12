@@ -37,6 +37,10 @@
             android:exported="false"/>
         <activity android:name=".ui.play.PlayActivity"
             android:exported="false"/>
+        <activity android:name=".ui.play.ModeSelectActivity" />
+        <activity android:name=".ui.play.PracticeActivity" />
+        <activity android:name=".ui.play.MatchActivity"/>
+
 
 
         <!-- (якщо вже створював) інші екрани без intent-filter -->

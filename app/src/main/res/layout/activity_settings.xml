@@ -69,20 +69,6 @@
                 android:inputType="none"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- Кількість варіантів -->
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="8dp">
-
-            <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                android:id="@+id/drop_choices"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/choices_count"
-                android:inputType="none"/>
-        </com.google.android.material.textfield.TextInputLayout>
 
     </LinearLayout>
 

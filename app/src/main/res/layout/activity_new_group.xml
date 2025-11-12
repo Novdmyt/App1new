@@ -10,7 +10,8 @@
         android:id="@+id/bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:title="@string/title_new_group"/>
+        app:navigationIcon="@drawable/ic_arrow_back_24"
+        app:title="@string/title_new_group" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list"

@@ -10,6 +10,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.easylearnlanguage.settings.SettingsActivity;
 import com.example.easylearnlanguage.temp.NewGroupActivity;
+import com.example.easylearnlanguage.ui.play.ModeSelectActivity;
+import com.example.easylearnlanguage.ui.word.WordsActivity;
 import com.google.android.material.card.MaterialCardView;
 
 public class MainActivity extends AppCompatActivity {
@@ -24,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
         MaterialCardView tileCorrect   = findViewById(R.id.tile_correct);
         ImageButton      btnSettings   = findViewById(R.id.btn_settings);
 
-        // "Нова група" – менеджер груп
+        // "Нова група" – менеджер груп (без таргету)
         tileNewGroup.setOnClickListener(v ->
                 startActivity(new Intent(this, NewGroupActivity.class))
         );
@@ -32,18 +34,16 @@ public class MainActivity extends AppCompatActivity {
         // "Нові слова" – вибір групи, потім WordsActivity
         tileNewWords.setOnClickListener(v -> {
             Intent it = new Intent(this, NewGroupActivity.class);
-            it.putExtra(NewGroupActivity.EXTRA_MODE, NewGroupActivity.MODE_WORDS);
+            it.putExtra(NewGroupActivity.EXTRA_TARGET, WordsActivity.class.getName());
             startActivity(it);
         });
 
-        // "Грати" – вибір групи, після кліку запускається PlayActivity
-        tilePlay.setOnClickListener(v -> {
-            Intent it = new Intent(this, NewGroupActivity.class);
-            it.putExtra(NewGroupActivity.EXTRA_MODE, NewGroupActivity.MODE_PLAY);
-            startActivity(it);
-        });
+        // "Грати" – екран вибору режиму (Практика / Навчання)
+        tilePlay.setOnClickListener(v ->
+                startActivity(new Intent(this, ModeSelectActivity.class))
+        );
 
-        // Заглушка для "Коригувати" (якщо ще не реалізовано)
+        // Поки що заглушка
         View.OnClickListener comingSoon = vv ->
                 Toast.makeText(this, R.string.coming_soon, Toast.LENGTH_SHORT).show();
         tileCorrect.setOnClickListener(comingSoon);
