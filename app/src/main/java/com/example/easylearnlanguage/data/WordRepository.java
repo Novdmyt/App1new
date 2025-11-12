@@ -17,6 +17,9 @@ public class WordRepository {
     public void add(long groupId, String front, String back) {
         io.execute(() -> dao.insert(new Word(groupId, front, back)));
     }
+    public void rename(long id, String front, String back) {
+        io.execute(() -> dao.rename(id, front, back));
+    }
 
     public void delete(Word w) { io.execute(() -> dao.delete(w)); }
 

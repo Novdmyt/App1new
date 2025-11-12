@@ -12,4 +12,6 @@ public class WordsViewModel extends AndroidViewModel {
     public LiveData<List<Word>> wordsByGroup(long gid) { return repo.wordsByGroup(gid); }
     public LiveData<List<Word>> allWords() { return repo.all(); }
     public void add(long gid, String front, String back){ repo.add(gid, front, back); }
+    public void delete(Word w) { repo.delete(w); }          // якщо не було
+    public void rename(long id, String front, String back) { repo.rename(id, front, back); }
 }

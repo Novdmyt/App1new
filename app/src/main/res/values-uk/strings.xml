@@ -49,6 +49,11 @@
     <string name="done">Готово!</string>
     <string name="title_dictionary">Словник</string>
     <string name="search_hint">Пошук слова або перекладу</string>
+    <string name="rename">Перейменувати</string>
+    <string name="delete">Видалити</string>
+    <string name="word_deleted">Слово видалено</string>
+    <string name="rename_word">Перейменування слова</string>
+
 
 
 

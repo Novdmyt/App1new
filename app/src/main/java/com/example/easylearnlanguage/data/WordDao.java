@@ -21,4 +21,8 @@ public interface WordDao {
 
     @Query("DELETE FROM words WHERE groupId = :groupId")
     void clearForGroup(long groupId);
+
+    @Query("UPDATE words SET front = :front, back = :back WHERE id = :id")
+    void rename(long id, String front, String back);
+
 }

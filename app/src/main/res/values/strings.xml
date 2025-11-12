@@ -26,6 +26,12 @@
     <string name="voice_german">German</string>
     <string name="voice_french">French</string>
     <string name="check_answer">Check</string>
+    <string name="rename">Rename</string>
+    <string name="delete">Delete</string>
+    <string name="word_deleted">Word deleted</string>
+    <string name="rename_word">Rename word</string>
+
+
 
     <string name="need_more_words">Потрібно щонайменше %1$d слів, зараз %2$d</string>
     <string name="add_word1">Додати слова</string>

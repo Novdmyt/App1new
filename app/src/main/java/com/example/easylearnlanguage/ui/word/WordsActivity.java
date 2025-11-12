@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.widget.EditText;
 
 import androidx.appcompat.app.AlertDialog;
@@ -13,9 +14,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.easylearnlanguage.R;
+import com.example.easylearnlanguage.data.Word;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;                           // ✅ правильний Snackbar
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
+import com.google.android.material.textfield.TextInputEditText;               // ✅ імпорт для TextInputEditText
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -45,7 +49,8 @@ public class WordsActivity extends AppCompatActivity {
         RecyclerView list = findViewById(R.id.list);
         list.setLayoutManager(new LinearLayoutManager(this));
         WordAdapter adapter = new WordAdapter();
-        list.setAdapter(adapter);
+        adapter.setOnLongClick((anchor, w, pos) -> showWordMenu(anchor, w));
+        list.setAdapter(adapter);                                             // ✅ не забудь setAdapter
 
         vm = new ViewModelProvider(this).get(WordsViewModel.class);
         vm.wordsByGroup(groupId).observe(this, adapter::submit);
@@ -55,8 +60,7 @@ public class WordsActivity extends AppCompatActivity {
     }
 
     private void showAddWordDialog() {
-        // інфлейтимо діалог
-        android.view.View view = LayoutInflater.from(this).inflate(R.layout.dialog_add_word, null, false);
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_add_word, null, false);
 
         EditText etFront = view.findViewById(R.id.etFront);
         EditText etBack  = view.findViewById(R.id.etBack);
@@ -64,32 +68,27 @@ public class WordsActivity extends AppCompatActivity {
         MaterialAutoCompleteTextView dropSrc = view.findViewById(R.id.dropSrcLang);
         MaterialAutoCompleteTextView dropDst = view.findViewById(R.id.dropDstLang);
 
-        // ярлики та BCP-47 теги (підлаштуй під свій набір мов)
         String[] labels = new String[] {
-                getString(R.string.english),     // "English"
-                getString(R.string.ukrainian),   // "Українська"
-                getString(R.string.german)       // "Deutsch"
+                getString(R.string.english),
+                getString(R.string.ukrainian),
+                getString(R.string.german)
         };
         String[] tags = new String[] { "en", "uk", "de" };
 
         dropSrc.setSimpleItems(labels);
         dropDst.setSimpleItems(labels);
 
-        // дефолти: слово німецькою, переклад українською
         int srcIdx = 2; // de
         int dstIdx = 1; // uk
         dropSrc.setText(labels[srcIdx], false);
         dropDst.setText(labels[dstIdx], false);
 
-        // застосувати локалі на старті
         applyLocale(etFront, tags[srcIdx]);
         applyLocale(etBack,  tags[dstIdx]);
 
-        // зміна мови у випадайках
         dropSrc.setOnItemClickListener((p, v, pos, id) -> applyLocale(etFront, tags[pos]));
         dropDst.setOnItemClickListener((p, v, pos, id) -> applyLocale(etBack,  tags[pos]));
 
-        // додатково — при фокусі ще раз підказати IME потрібну локаль
         etFront.setOnFocusChangeListener((v, has) -> {
             if (has) {
                 int pos = Arrays.asList(labels).indexOf(dropSrc.getText().toString());
@@ -116,21 +115,53 @@ public class WordsActivity extends AppCompatActivity {
                 .show();
     }
 
-    /** Підказуємо клавіатурі (IME) й системі бажану мову для поля вводу. */
     private void applyLocale(EditText edit, String bcp47Tag) {
         Locale loc = Locale.forLanguageTag(bcp47Tag);
-
-        // API 24+: повна підтримка LocaleList та imeHintLocales
         if (Build.VERSION.SDK_INT >= 24) {
             android.os.LocaleList ll = new android.os.LocaleList(loc);
-            // Вказуємо бажану мову для автокорекції/орфографії
             edit.setTextLocales(ll);
-            // Підказуємо клавіатурі потрібну розкладку
             edit.setImeHintLocales(ll);
         } else if (Build.VERSION.SDK_INT >= 21) {
-            // API 21–23: доступне тільки setTextLocale(Locale)
             edit.setTextLocale(loc);
         }
-        // На ще старших (не актуально при minSdk=23) — нічого не робимо
+    }
+
+    private void showWordMenu(View anchor, Word w) {
+        android.widget.PopupMenu pm = new android.widget.PopupMenu(this, anchor);
+        pm.getMenu().add(0, 1, 0, getString(R.string.rename));  // додай рядки у strings.xml за бажанням
+        pm.getMenu().add(0, 2, 1, getString(R.string.delete));
+
+        pm.setOnMenuItemClickListener(item -> {
+            if (item.getItemId() == 1) { showRenameDialog(w); return true; }
+            if (item.getItemId() == 2) {
+                vm.delete(w);
+                Snackbar.make(findViewById(android.R.id.content),          // ✅ Material Snackbar
+                                R.string.word_deleted, Snackbar.LENGTH_LONG)
+                        .setAction(R.string.undo, v -> vm.add(w.groupId, w.front, w.back))
+                        .show();
+                return true;
+            }
+            return false;
+        });
+        pm.show();
+    }
+
+    private void showRenameDialog(Word w) {
+        View view = LayoutInflater.from(this).inflate(R.layout.dialog_rename_word, null, false);
+        TextInputEditText etFront = view.findViewById(R.id.etFront);         // ✅ ті самі id
+        TextInputEditText etBack  = view.findViewById(R.id.etBack);
+        etFront.setText(w.front);
+        etBack.setText(w.back);
+
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.rename_word)
+                .setView(view)
+                .setPositiveButton(android.R.string.ok, (d, which) -> {
+                    String nf = etFront.getText().toString().trim();
+                    String nb = etBack.getText().toString().trim();
+                    if (!nf.isEmpty() && !nb.isEmpty()) vm.rename(w.id, nf, nb);
+                })
+                .setNegativeButton(android.R.string.cancel, null)
+                .show();
     }
 }

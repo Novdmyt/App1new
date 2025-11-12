@@ -14,24 +14,36 @@ import java.util.List;
 public class WordAdapter extends RecyclerView.Adapter<WordAdapter.VH> {
     private final List<Word> items = new ArrayList<>();
 
+    public interface OnItemLongClick {
+        void onLongClick(View anchor, Word w, int position);
+    }
+    private OnItemLongClick onLongClick;
+    public void setOnLongClick(OnItemLongClick cb) { onLongClick = cb; }
     public void submit(List<Word> data){
         items.clear();
         if (data != null) items.addAll(data);
         notifyDataSetChanged();
     }
 
+
     @NonNull @Override public VH onCreateViewHolder(@NonNull ViewGroup p, int v){
         View view = LayoutInflater.from(p.getContext()).inflate(R.layout.item_word, p, false);
         return new VH(view);
     }
 
-    @Override public void onBindViewHolder(@NonNull VH h, int pos){
+    @Override public int getItemCount(){ return items.size(); }
+
+    @Override public void onBindViewHolder(@NonNull VH h, int pos) {
         Word w = items.get(pos);
         h.front.setText(w.front);
         h.back.setText(w.back);
+
+        h.itemView.setOnLongClickListener(v -> {
+            if (onLongClick != null) onLongClick.onLongClick(v, w, h.getBindingAdapterPosition());
+            return true;
+        });
     }
 
-    @Override public int getItemCount(){ return items.size(); }
 
     static class VH extends RecyclerView.ViewHolder{
         TextView front, back;
