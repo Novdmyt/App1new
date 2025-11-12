@@ -10,6 +10,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
         android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
@@ -19,20 +20,97 @@
                 android:id="@+id/etTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/title_new_group"/>
+                android:hint="@string/title_new_group"
+                android:gravity="center_horizontal" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.Material3.TextInputLayout.FilledBox.ExposedDropdownMenu"
-            android:layout_width="match_parent"
+        <!-- ВИБІР КОЛЬОРУ КРУЖКАМИ -->
+        <com.google.android.material.button.MaterialButtonToggleGroup
+            android:id="@+id/groupColors"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="12dp">
+            android:layout_marginTop="12dp"
+            app:singleSelection="true">
 
-            <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                android:id="@+id/dropColor"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/color"/>
-        </com.google.android.material.textfield.TextInputLayout>
+            <!-- none -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnColorNone"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:backgroundTint="@android:color/transparent"
+                app:strokeColor="@color/md_outline"
+                app:strokeWidth="2dp"
+                app:shapeAppearanceOverlay="@style/CircleShape" />
+
+            <!-- blue -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnColorBlue"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:backgroundTint="@color/blue"
+                app:shapeAppearanceOverlay="@style/CircleShape" />
+
+            <!-- yellow -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnColorYellow"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:backgroundTint="@color/yellow"
+                app:shapeAppearanceOverlay="@style/CircleShape" />
+
+            <!-- red -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnColorRed"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:backgroundTint="@color/red"
+                app:shapeAppearanceOverlay="@style/CircleShape" />
+
+            <!-- green -->
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnColorGreen"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:contentDescription="@string/color_green"
+                android:backgroundTint="@color/green"
+                app:shapeAppearanceOverlay="@style/CircleShape" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnColorPurple"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="40dp" android:layout_height="40dp"
+                android:backgroundTint="@color/purple"
+                app:shapeAppearanceOverlay="@style/CircleShape" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnColorOrange"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="40dp" android:layout_height="40dp"
+                android:backgroundTint="@color/orange"
+                app:shapeAppearanceOverlay="@style/CircleShape" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnColorTeal"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="40dp" android:layout_height="40dp"
+                android:backgroundTint="@color/teal"
+                app:shapeAppearanceOverlay="@style/CircleShape" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnColorPink"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="40dp" android:layout_height="40dp"
+                android:backgroundTint="@color/pink"
+                app:shapeAppearanceOverlay="@style/CircleShape" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnColorGray"
+                style="@style/Widget.Material3.Button.IconButton"
+                android:layout_width="40dp" android:layout_height="40dp"
+                android:backgroundTint="@color/gray"
+                app:shapeAppearanceOverlay="@style/CircleShape" />
+
+
+        </com.google.android.material.button.MaterialButtonToggleGroup>
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>

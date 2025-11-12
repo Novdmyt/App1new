@@ -11,6 +11,12 @@
     <color name="md_error">#FFCDD2</color>
     <color name="teal_700">#AF2882</color>    <!-- рожево-червоний -->
     <color name="md_outline">#79747E</color> <!-- Material3 outline (light) -->
+    <color name="purple">#7E57C2</color>
+    <color name="orange">#FF9800</color>
+    <color name="teal">#009688</color>
+    <color name="pink">#E91E63</color>
+    <color name="gray">#9E9E9E</color>
+
 
 
 

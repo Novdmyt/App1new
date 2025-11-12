@@ -11,7 +11,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:title="@string/training"
-        app:navigationIcon="@drawable/ic_arrow_back_24"/>
+        app:navigationIcon="@drawable/ic_arrow_back_24"
+        app:titleCentered="true"/>
 
     <!-- две колонки списков -->
     <LinearLayout

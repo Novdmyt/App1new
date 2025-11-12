@@ -105,24 +105,11 @@ public class NewGroupActivity extends AppCompatActivity {
     private void showAddDialog() {
         var view = LayoutInflater.from(this).inflate(R.layout.dialog_add_group, null, false);
         EditText etTitle = view.findViewById(R.id.etTitle);
-        MaterialAutoCompleteTextView dropColor = view.findViewById(R.id.dropColor);
+        com.google.android.material.button.MaterialButtonToggleGroup groupColors =
+                view.findViewById(R.id.groupColors);
 
-        String[] labels = new String[] {
-                getString(R.string.color_none),
-                getString(R.string.color_blue),
-                getString(R.string.color_yellow),
-                getString(R.string.color_red),
-                getString(R.string.color_green)
-        };
-        int[] values = new int[] {
-                0,
-                getColor(R.color.blue),
-                getColor(R.color.yellow),
-                getColor(R.color.red),
-                getColor(R.color.green)
-        };
-        dropColor.setSimpleItems(labels);
-        dropColor.setText(labels[0], false);
+        // за замовчуванням — "без кольору"
+        groupColors.check(R.id.btnColorNone);
 
         new androidx.appcompat.app.AlertDialog.Builder(this)
                 .setTitle(R.string.title_new_group)
@@ -133,13 +120,25 @@ public class NewGroupActivity extends AppCompatActivity {
                         etTitle.setError(getString(R.string.title_new_group));
                         return;
                     }
-                    int idx = 0;
-                    String chosen = dropColor.getText().toString();
-                    for (int i = 0; i < labels.length; i++) if (labels[i].equals(chosen)) { idx = i; break; }
-                    vm.add(title, "", "", values[idx]);
+
+                    int pickedColor = 0; // none
+                    int checkedId = groupColors.getCheckedButtonId();
+                    if (checkedId == R.id.btnColorBlue)   pickedColor = getColorCompat(R.color.blue);
+                    else if (checkedId == R.id.btnColorYellow) pickedColor = getColorCompat(R.color.yellow);
+                    else if (checkedId == R.id.btnColorRed)    pickedColor = getColorCompat(R.color.red);
+                    else if (checkedId == R.id.btnColorGreen)  pickedColor = getColorCompat(R.color.green);
+                    else if (checkedId == R.id.btnColorPurple)  pickedColor = getColorCompat(R.color.purple);
+                    else if (checkedId == R.id.btnColorOrange)  pickedColor = getColorCompat(R.color.orange);
+                    else if (checkedId == R.id.btnColorTeal)  pickedColor = getColorCompat(R.color.teal);
+                    else if (checkedId == R.id.btnColorPink)  pickedColor = getColorCompat(R.color.pink);
+                    else if (checkedId == R.id.btnColorGray)  pickedColor = getColorCompat(R.color.gray);
+                    vm.add(title, "", "", pickedColor);
                 })
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
+    }
+    private int getColorCompat(int resId) {
+        return androidx.core.content.ContextCompat.getColor(this, resId);
     }
 
     private void attachSwipeToDelete(RecyclerView rv) {
