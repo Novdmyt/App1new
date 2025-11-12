@@ -63,5 +63,6 @@
     <string name="rename">Umbenennen</string>
     <string name="delete">Löschen</string>
     <string name="word_deleted">Wort gelöscht</string>
+    <string name="word_exists">Ein solches Wort existiert</string>
 
 </resources>

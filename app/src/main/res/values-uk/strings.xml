@@ -53,7 +53,7 @@
     <string name="delete">Видалити</string>
     <string name="word_deleted">Слово видалено</string>
     <string name="rename_word">Перейменування слова</string>
-
+    <string name="word_exists">Таке слово вже є</string>
 
 
 

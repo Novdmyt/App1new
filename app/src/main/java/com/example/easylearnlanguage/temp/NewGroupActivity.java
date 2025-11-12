@@ -70,8 +70,7 @@ public class NewGroupActivity extends AppCompatActivity {
         FloatingActionButton fab = findViewById(R.id.fab_add);
         fab.setOnClickListener(v -> showAddDialog());
 
-        // свайп-видалення (залишаю, якщо подобається)
-        attachSwipeToDelete(list);
+
     }
 
     /** Перехід по кліку на групу — на targetClassName (якщо не задано — WordsActivity) */
@@ -192,24 +191,6 @@ public class NewGroupActivity extends AppCompatActivity {
                 .show();
     }
 
-    /** За бажанням залишаю свайп-видалення */
-    private void attachSwipeToDelete(RecyclerView rv) {
-        ItemTouchHelper.SimpleCallback cb = new ItemTouchHelper.SimpleCallback(
-                0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-            @Override public boolean onMove(RecyclerView r, RecyclerView.ViewHolder v, RecyclerView.ViewHolder t){ return false; }
-            @Override public void onSwiped(RecyclerView.ViewHolder vh, int dir) {
-                int pos = vh.getBindingAdapterPosition();
-                Group g = adapter.getItem(pos);
-                if (g == null) return;
 
-                adapter.removeAt(pos);
-                vm.deleteCascade(g);
 
-                Snackbar.make(rv, "Групу видалено", Snackbar.LENGTH_LONG)
-                        .setAction("Скасувати", v -> vm.add(g.title, g.from, g.to, g.color))
-                        .show();
-            }
-        };
-        new ItemTouchHelper(cb).attachToRecyclerView(rv);
-    }
 }

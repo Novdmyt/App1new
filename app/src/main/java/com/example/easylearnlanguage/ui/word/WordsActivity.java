@@ -17,11 +17,13 @@ import com.example.easylearnlanguage.R;
 import com.example.easylearnlanguage.data.Word;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;                           // ✅ правильний Snackbar
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.MaterialAutoCompleteTextView;
-import com.google.android.material.textfield.TextInputEditText;               // ✅ імпорт для TextInputEditText
+import com.google.android.material.textfield.TextInputEditText;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Locale;
 
 public class WordsActivity extends AppCompatActivity {
@@ -31,6 +33,9 @@ public class WordsActivity extends AppCompatActivity {
 
     private WordsViewModel vm;
     private long groupId;
+
+    // 🔹 поточні слова цієї групи
+    private final List<Word> currentWords = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,17 +48,23 @@ public class WordsActivity extends AppCompatActivity {
         if (groupId <= 0) { finish(); return; }
 
         MaterialToolbar bar = findViewById(R.id.bar);
-        bar.setTitle(title != null ? title : getString(R.string.title_new_words));
+        bar.setTitle(getString(R.string.title_new_words));
         bar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
         RecyclerView list = findViewById(R.id.list);
         list.setLayoutManager(new LinearLayoutManager(this));
         WordAdapter adapter = new WordAdapter();
         adapter.setOnLongClick((anchor, w, pos) -> showWordMenu(anchor, w));
-        list.setAdapter(adapter);                                             // ✅ не забудь setAdapter
+        list.setAdapter(adapter);
 
         vm = new ViewModelProvider(this).get(WordsViewModel.class);
-        vm.wordsByGroup(groupId).observe(this, adapter::submit);
+
+        // 🔹 зберігаємо список слів у currentWords для перевірок
+        vm.wordsByGroup(groupId).observe(this, words -> {
+            currentWords.clear();
+            if (words != null) currentWords.addAll(words);
+            adapter.submit(words);
+        });
 
         FloatingActionButton fab = findViewById(R.id.fab_add);
         fab.setOnClickListener(v -> showAddWordDialog());
@@ -109,6 +120,14 @@ public class WordsActivity extends AppCompatActivity {
                     String front = etFront.getText().toString().trim();
                     String back  = etBack.getText().toString().trim();
                     if (front.isEmpty() || back.isEmpty()) return;
+
+                    // 🔹 перевірка на дубль
+                    if (isDuplicateInGroup(groupId, -1, front, back)) {
+                        Snackbar.make(findViewById(android.R.id.content),
+                                R.string.word_exists, Snackbar.LENGTH_LONG).show();
+                        return;
+                    }
+
                     vm.add(groupId, front, back);
                 })
                 .setNegativeButton(android.R.string.cancel, null)
@@ -128,14 +147,14 @@ public class WordsActivity extends AppCompatActivity {
 
     private void showWordMenu(View anchor, Word w) {
         android.widget.PopupMenu pm = new android.widget.PopupMenu(this, anchor);
-        pm.getMenu().add(0, 1, 0, getString(R.string.rename));  // додай рядки у strings.xml за бажанням
+        pm.getMenu().add(0, 1, 0, getString(R.string.rename));
         pm.getMenu().add(0, 2, 1, getString(R.string.delete));
 
         pm.setOnMenuItemClickListener(item -> {
             if (item.getItemId() == 1) { showRenameDialog(w); return true; }
             if (item.getItemId() == 2) {
                 vm.delete(w);
-                Snackbar.make(findViewById(android.R.id.content),          // ✅ Material Snackbar
+                Snackbar.make(findViewById(android.R.id.content),
                                 R.string.word_deleted, Snackbar.LENGTH_LONG)
                         .setAction(R.string.undo, v -> vm.add(w.groupId, w.front, w.back))
                         .show();
@@ -148,7 +167,7 @@ public class WordsActivity extends AppCompatActivity {
 
     private void showRenameDialog(Word w) {
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_rename_word, null, false);
-        TextInputEditText etFront = view.findViewById(R.id.etFront);         // ✅ ті самі id
+        TextInputEditText etFront = view.findViewById(R.id.etFront);
         TextInputEditText etBack  = view.findViewById(R.id.etBack);
         etFront.setText(w.front);
         etBack.setText(w.back);
@@ -159,9 +178,39 @@ public class WordsActivity extends AppCompatActivity {
                 .setPositiveButton(android.R.string.ok, (d, which) -> {
                     String nf = etFront.getText().toString().trim();
                     String nb = etBack.getText().toString().trim();
-                    if (!nf.isEmpty() && !nb.isEmpty()) vm.rename(w.id, nf, nb);
+                    if (nf.isEmpty() || nb.isEmpty()) return;
+
+                    // 🔹 при перейменуванні також не даємо зробити дубль
+                    if (isDuplicateInGroup(w.groupId, w.id, nf, nb)) {
+                        Snackbar.make(findViewById(android.R.id.content),
+                                R.string.word_exists, Snackbar.LENGTH_LONG).show();
+                        return;
+                    }
+
+                    vm.rename(w.id, nf, nb);
                 })
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
+    }
+
+    /**
+     * Перевіряє, чи є вже в цій групі слово з такими ж front/back.
+     *
+     * @param ignoreId id слова, яке ігноруємо (для rename), для нового слова передаємо -1
+     */
+    private boolean isDuplicateInGroup(long groupId, long ignoreId, String front, String back) {
+        String f = front.trim();
+        String b = back.trim();
+
+        for (Word word : currentWords) {
+            if (word.groupId == groupId && word.id != ignoreId) {
+                if (word.front != null && word.back != null &&
+                        word.front.trim().equalsIgnoreCase(f) &&
+                        word.back.trim().equalsIgnoreCase(b)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

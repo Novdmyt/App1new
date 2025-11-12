@@ -70,5 +70,6 @@
     <string name="title_groups">Goup</string>
     <string name="title_dictionary">Dictionary</string>
     <string name="search_hint">Search for a word or translation</string>
+    <string name="word_exists">Such a word exists</string>
 
 </resources>
