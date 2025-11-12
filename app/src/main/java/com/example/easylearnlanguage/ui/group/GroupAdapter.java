@@ -1,11 +1,15 @@
 package com.example.easylearnlanguage.ui.group;
 
+import android.content.Context;
+import android.content.res.ColorStateList;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.easylearnlanguage.R;
@@ -17,64 +21,93 @@ import java.util.List;
 
 public class GroupAdapter extends RecyclerView.Adapter<GroupAdapter.VH> {
 
-    public interface OnClick { void onClick(Group g); }
-    private final OnClick cb;
-    private final List<Group> items = new ArrayList<>();
+    public interface OnItemClick { void onClick(Group g); }
+    public interface OnItemLongClick { void onLongClick(View anchor, Group g, int position); }
 
-    public GroupAdapter(OnClick cb){ this.cb = cb; }
+    private final List<Group> data = new ArrayList<>();
+    private final OnItemClick onClick;
+    private OnItemLongClick onLongClick;
 
-    public void submit(List<Group> data){
-        items.clear();
-        if (data != null) items.addAll(data);
+    public GroupAdapter(OnItemClick click){ this.onClick = click; }
+    public void setOnLongClick(OnItemLongClick cb){ this.onLongClick = cb; }
+
+    @NonNull @Override
+    public VH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_group, parent, false);
+        return new VH(v);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull VH h, int position) {
+        Group g = data.get(position);
+        h.title.setText(g.title);
+
+        // Колір
+        final Context ctx = h.itemView.getContext();
+        final int outline = resolveAttrColor(ctx, com.google.android.material.R.attr.colorOutline);
+
+        if (g.color == 0) {
+            // Без кольору: прозорий фон, сірий обвід, кружок — outline
+            h.card.setCardBackgroundColor(ColorStateList.valueOf(0x00FFFFFF));
+            h.card.setStrokeColor(outline);
+            h.colorDot.setBackgroundTintList(ColorStateList.valueOf(outline));
+        } else {
+            // З кольором: мʼякий фон, обвід/кружок у колір групи
+            int bg = withAlpha(g.color, 0.12f);
+            h.card.setCardBackgroundColor(ColorStateList.valueOf(bg));
+            h.card.setStrokeColor(g.color);
+            h.colorDot.setBackgroundTintList(ColorStateList.valueOf(g.color));
+        }
+
+        h.itemView.setOnClickListener(v -> { if (onClick != null) onClick.onClick(g); });
+        h.itemView.setOnLongClickListener(v -> {
+            if (onLongClick != null) onLongClick.onLongClick(v, g, h.getBindingAdapterPosition());
+            return true;
+        });
+    }
+
+    @Override public int getItemCount() { return data.size(); }
+
+    // -------- публічні методи --------
+    public void submit(List<Group> items){
+        data.clear();
+        if (items != null) data.addAll(items);
         notifyDataSetChanged();
     }
 
-    @NonNull @Override public VH onCreateViewHolder(@NonNull ViewGroup p, int v){
-        View view = LayoutInflater.from(p.getContext()).inflate(R.layout.item_group, p, false);
-        return new VH(view);
-    }
-    public Group getItem(int position) {           // ДОДАНО
-        return (position >= 0 && position < items.size()) ? items.get(position) : null;
+    public Group getItem(int pos){
+        if (pos < 0 || pos >= data.size()) return null;
+        return data.get(pos);
     }
 
-    public void removeAt(int position) {           // ДОДАНО (локальне прибрання для плавності)
-        if (position >= 0 && position < items.size()) {
-            items.remove(position);
-            notifyItemRemoved(position);
-        }
+    public void removeAt(int pos){
+        if (pos < 0 || pos >= data.size()) return;
+        data.remove(pos);
+        notifyItemRemoved(pos);
     }
 
-    public void restoreAt(int position, Group g) { // ДОДАНО (для Undo)
-        if (position < 0 || position > items.size()) position = items.size();
-        items.add(position, g);
-        notifyItemInserted(position);
-    }
-
-    @Override public void onBindViewHolder(@NonNull VH h, int pos){
-        Group g = items.get(pos);
-        h.title.setText(g.title);
-
-        // якщо колір заданий (не 0), фарбуємо фон картки
-        if (g.color != 0) {
-            h.card.setCardBackgroundColor(g.color);
-        } else {
-            // повернути дефолтний (на випадок reuse ViewHolder)
-            h.card.setCardBackgroundColor(
-                    h.card.getContext().getColor(android.R.color.transparent));
-        }
-
-        h.itemView.setOnClickListener(v -> cb.onClick(g));
-    }
-
-    @Override public int getItemCount(){ return items.size(); }
-
-    static class VH extends RecyclerView.ViewHolder{
-        MaterialCardView card;
-        TextView title;
-        VH(@NonNull View itemView){
+    // -------- ViewHolder --------
+    static class VH extends RecyclerView.ViewHolder {
+        final MaterialCardView card;
+        final View colorDot;
+        final TextView title;
+        VH(@NonNull View itemView) {
             super(itemView);
-            card  = (MaterialCardView) itemView;
+            card = itemView.findViewById(R.id.card);
+            colorDot = itemView.findViewById(R.id.colorDot);
             title = itemView.findViewById(R.id.tvTitle);
         }
+    }
+
+    // -------- helpers --------
+    private static int withAlpha(int color, float alpha){
+        int a = Math.round(255 * alpha);
+        return (color & 0x00FFFFFF) | (a << 24);
+    }
+    private static int resolveAttrColor(Context ctx, int attr){
+        TypedValue tv = new TypedValue();
+        ctx.getTheme().resolveAttribute(attr, tv, true);
+        return tv.data;
     }
 }

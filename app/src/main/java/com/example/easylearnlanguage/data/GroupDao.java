@@ -10,8 +10,6 @@ import java.util.List;
 
 @Dao
 public interface GroupDao {
-
-    // ВАЖНО: экранируем имя таблицы, чтобы парсер Room не ругался
     @Query("SELECT * FROM `groups` ORDER BY title COLLATE NOCASE")
     LiveData<List<Group>> observeAll();
 
@@ -23,4 +21,8 @@ public interface GroupDao {
 
     @Query("DELETE FROM `groups`")
     void clearAll();
+
+    // NEW: перейменування
+    @Query("UPDATE `groups` SET title = :title WHERE id = :id")
+    void rename(long id, String title);
 }

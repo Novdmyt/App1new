@@ -19,18 +19,17 @@ public class GroupRepository {
     public LiveData<List<Group>> observeAll(){ return groupDao.observeAll(); }
 
     public void add(String title, String from, String to, int color){
-        io.execute(() ->
-                groupDao.insert(new Group(title, from, to, System.currentTimeMillis(), color))
-        );
+        io.execute(() -> groupDao.insert(new Group(title, from, to, System.currentTimeMillis(), color)));
     }
 
     public void delete(Group g){ io.execute(() -> groupDao.delete(g)); }
 
-    // каскад: сначала слова группы, потом сама группа
     public void deleteCascade(Group g){
-        io.execute(() -> {
-            wordDao.clearForGroup(g.id);
-            groupDao.delete(g);
-        });
+        io.execute(() -> { wordDao.clearForGroup(g.id); groupDao.delete(g); });
+    }
+
+    // NEW
+    public void rename(long id, String title){
+        io.execute(() -> groupDao.rename(id, title));
     }
 }
