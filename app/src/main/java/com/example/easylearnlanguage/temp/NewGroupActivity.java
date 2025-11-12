@@ -32,7 +32,6 @@ public class NewGroupActivity extends AppCompatActivity {
     /** Имя класса целевого экрана (String, например "com.example....PlayActivity") */
     public static final String EXTRA_TARGET = "target_activity";
 
-
     private String targetClassName = null;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +47,7 @@ public class NewGroupActivity extends AppCompatActivity {
         MaterialToolbar bar = findViewById(R.id.bar);
         bar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
         int title = R.string.title_groups;
-        if (PlayActivity.class.getName().equals(targetClassName))       title = R.string.title_play;
+        if (PlayActivity.class.getName().equals(targetClassName))          title = R.string.title_play;
         else if (PracticeActivity.class.getName().equals(targetClassName)) title = R.string.practice;
         else if (MatchActivity.class.getName().equals(targetClassName))    title = R.string.training;
         bar.setTitle(title);
@@ -155,8 +154,9 @@ public class NewGroupActivity extends AppCompatActivity {
                 adapter.removeAt(pos);
                 vm.deleteCascade(g);
 
+                // ИСПРАВЛЕНО: используем реальные поля модели Group: from / to
                 Snackbar.make(rv, R.string.group_deleted, Snackbar.LENGTH_LONG)
-                        .setAction(R.string.undo, v -> vm.add(g.title, g.fromLang, g.toLang, g.color))
+                        .setAction(R.string.undo, v -> vm.add(g.title, g.from, g.to, g.color))
                         .show();
             }
         };

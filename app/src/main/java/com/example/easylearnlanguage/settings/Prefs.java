@@ -1,29 +1,45 @@
+// app/src/main/java/com/example/easylearnlanguage/settings/Prefs.java
 package com.example.easylearnlanguage.settings;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-
 import androidx.appcompat.app.AppCompatDelegate;
 
 public class Prefs {
-    private final SharedPreferences sp;
+    private static final String FILE = "prefs";
 
-    public Prefs(Context ctx) {
-        Context app = ctx.getApplicationContext();
-        sp = app.getSharedPreferences("prefs", Context.MODE_PRIVATE);
+    private static final String KEY_UI_LANG = "ui_lang";   // "system" | "uk" | "de" | "en"
+    private static final String KEY_TTS    = "tts_lang";   // "en" | "de" | "fr"
+    private static final String KEY_NIGHT  = "night_mode"; // int: AppCompatDelegate.MODE_*
+
+    private final SharedPreferences p;
+
+    public Prefs(Context c) {
+        p = c.getSharedPreferences(FILE, Context.MODE_PRIVATE);
     }
 
-    // --- Language (BCP-47 tag) ---
-    public void setLangTag(String tag){ sp.edit().putString("lang_tag", tag).apply(); }
-    public String getLangTag(){ return sp.getString("lang_tag", "system"); }
+    // ---------- UI language ----------
+    public String getLangTag() {
+        return p.getString(KEY_UI_LANG, "system");
+    }
+    public void setLangTag(String tag) {
+        p.edit().putString(KEY_UI_LANG, tag).apply();
+    }
 
-    // --- Night mode ---
-    public void setNightMode(int mode){ sp.edit().putInt("night_mode", mode).apply(); }
-    public int getNightMode(){ return sp.getInt("night_mode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM); }
+    // ---------- TTS voice language ----------
+    public String getTtsLang() {
+        return p.getString(KEY_TTS, "en");
+    }
+    public void setTtsLang(String tag) {
+        p.edit().putString(KEY_TTS, tag).apply();
+    }
 
-    // --- TTS voice lang (BCP-47, en/de/fr) ---
-    public void setTtsLang(String tag){ sp.edit().putString("tts_lang", tag).apply(); }
-    public String getTtsLang(){ return sp.getString("tts_lang", "en"); }
-
-    // НЕТ: setPlayChoices/getPlayChoices — удалены
+    // ---------- Night mode / Theme ----------
+    // Повертає один з MODE_NIGHT_* із AppCompatDelegate
+    public int getNightMode() {
+        return p.getInt(KEY_NIGHT, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+    }
+    public void setNightMode(int mode) {
+        p.edit().putInt(KEY_NIGHT, mode).apply();
+    }
 }

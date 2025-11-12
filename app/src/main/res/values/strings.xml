@@ -25,9 +25,11 @@
     <string name="voice_english">English</string>
     <string name="voice_german">German</string>
     <string name="voice_french">French</string>
+    <string name="check_answer">Check</string>
 
     <string name="need_more_words">Потрібно щонайменше %1$d слів, зараз %2$d</string>
     <string name="add_word1">Додати слова</string>
+
 
     <string name="choices_count">Choices count</string>
     <string name="choices_3">3</string>
@@ -60,5 +62,7 @@
     <string name="shuffle">Stir</string>
     <string name="done">Done!</string>
     <string name="title_groups">Goup</string>
+    <string name="title_dictionary">Dictionary</string>
+    <string name="search_hint">Search for a word or translation</string>
 
 </resources>

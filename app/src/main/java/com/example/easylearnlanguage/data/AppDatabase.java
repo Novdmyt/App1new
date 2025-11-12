@@ -5,17 +5,12 @@ import androidx.room.Database;
 import androidx.room.Room;
 import androidx.room.RoomDatabase;
 
-@Database(
-        entities = { Group.class, Word.class },
-        version = 3,
-        exportSchema = false
-)
+@Database(entities = { Word.class, Group.class }, version = 3, exportSchema = false)
 public abstract class AppDatabase extends RoomDatabase {
-
-    public abstract GroupDao groupDao();
-    public abstract WordDao wordDao();
-
     private static volatile AppDatabase INSTANCE;
+
+    public abstract WordDao  wordDao();
+    public abstract GroupDao groupDao();
 
     public static AppDatabase get(Context ctx) {
         if (INSTANCE == null) {
@@ -24,9 +19,9 @@ public abstract class AppDatabase extends RoomDatabase {
                     INSTANCE = Room.databaseBuilder(
                                     ctx.getApplicationContext(),
                                     AppDatabase.class,
-                                    "easylearn.db"
+                                    "app.db"
                             )
-                            // Поки розробка — перезбираємо схему при зміні версії
+                            // если схема менялась – база пересоздастся вместо крэша
                             .fallbackToDestructiveMigration()
                             .build();
                 }

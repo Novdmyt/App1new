@@ -1,24 +1,23 @@
 package com.example.easylearnlanguage.data;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
-@Entity(tableName = "study_groups")
+@Entity(tableName = "groups")
 public class Group {
+    @PrimaryKey(autoGenerate = true) public long id;
+    @NonNull public String title;
+    @NonNull public String from;
+    @NonNull public String to;
+    public long createdAt;
+    public int color;
 
-    @PrimaryKey(autoGenerate = true)
-    public long id;
-
-    public String title;        // назва набору/групи
-    public String fromLang;     // вихідна мова (наприклад "DE")
-    public String toLang;       // цільова мова (наприклад "UK")
-    public long createdAt;      // System.currentTimeMillis()
-    public int color;           // ARGB (можна 0 для дефолту)
-
-    public Group(String title, String fromLang, String toLang, long createdAt, int color) {
+    public Group(@NonNull String title, @NonNull String from, @NonNull String to,
+                 long createdAt, int color) {
         this.title = title;
-        this.fromLang = fromLang;
-        this.toLang = toLang;
+        this.from = from;
+        this.to = to;
         this.createdAt = createdAt;
         this.color = color;
     }

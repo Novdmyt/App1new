@@ -47,8 +47,15 @@
     <string name="restart">Заново</string>
     <string name="shuffle">Перемішати</string>
     <string name="done">Готово!</string>
+    <string name="title_dictionary">Словник</string>
+    <string name="search_hint">Пошук слова або перекладу</string>
 
 
+
+
+
+
+    <string name="check_answer">Перевірити</string>
     <string name="need_more_words">Потрібно щонайменше %1$d слів, зараз %2$d</string>
     <string name="add_word1">Додати слова</string>
 

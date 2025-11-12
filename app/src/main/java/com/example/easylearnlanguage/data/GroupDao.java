@@ -4,22 +4,23 @@ import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
 import androidx.room.Delete;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
-
 import java.util.List;
 
 @Dao
 public interface GroupDao {
 
-    @Query("SELECT * FROM study_groups ORDER BY createdAt DESC")
+    // ВАЖНО: экранируем имя таблицы, чтобы парсер Room не ругался
+    @Query("SELECT * FROM `groups` ORDER BY title COLLATE NOCASE")
     LiveData<List<Group>> observeAll();
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     long insert(Group g);
 
     @Delete
     void delete(Group g);
 
-    @Query("DELETE FROM study_groups")
-    void clear();
+    @Query("DELETE FROM `groups`")
+    void clearAll();
 }

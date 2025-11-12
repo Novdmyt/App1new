@@ -1,10 +1,11 @@
 package com.example.easylearnlanguage.ui.play;
 
-import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
-import android.view.View;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.view.inputmethod.EditorInfo;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
@@ -16,62 +17,57 @@ import com.example.easylearnlanguage.ui.word.WordsViewModel;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.google.android.material.textview.MaterialTextView;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.text.Normalizer;
+import java.util.*;
 import java.util.Locale;
 
 public class PracticeActivity extends AppCompatActivity {
-
     public static final String EXTRA_GROUP_ID = "group_id";
     public static final String EXTRA_GROUP_TITLE = "group_title";
 
-    private WordsViewModel vm;
+    private TextInputEditText etPrompt, etAnswer;
+    private TextInputLayout tilAnswer;
+    private MaterialButton btnSpeak, btnCheck, btnHelp;
+
     private final List<Word> words = new ArrayList<>();
-    private Word current;
     private int index = 0;
+    private Word current;
 
-    private MaterialTextView tvFront, tvBack;
-    private MaterialButton btnReveal, btnNext, btnSpeak;
-
-    private TextToSpeech tts;
-    private boolean ttsReady = false;
+    private WordsViewModel vm;
+    private TextToSpeech tts; private boolean ttsReady = false;
 
     @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_practice);
 
         MaterialToolbar bar = findViewById(R.id.bar);
+        bar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
         String title = getIntent().getStringExtra(EXTRA_GROUP_TITLE);
         bar.setTitle(title != null ? title : getString(R.string.practice));
-        bar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
 
-        tvFront = findViewById(R.id.tv_front);
-        tvBack  = findViewById(R.id.tv_back);
-        btnReveal = findViewById(R.id.btn_reveal);
-        btnNext   = findViewById(R.id.btn_next);
-        btnSpeak  = findViewById(R.id.btn_speak_practice);
+        etPrompt = findViewById(R.id.etPrompt);
+        etAnswer = findViewById(R.id.etAnswer);
+        tilAnswer = findViewById(R.id.tilAnswer);
+        btnSpeak = findViewById(R.id.btnSpeak);
+        btnCheck = findViewById(R.id.btnCheck);
+        btnHelp  = findViewById(R.id.btnHelp);
 
-        long groupId = getIntent().getLongExtra(EXTRA_GROUP_ID, -1L);
         vm = new ViewModelProvider(this).get(WordsViewModel.class);
-        vm.wordsByGroup(groupId).observe(this, list -> {
-            words.clear();
-            if (list != null) words.addAll(list);
-            if (words.isEmpty()) {
-                Snackbar.make(findViewById(android.R.id.content), R.string.add_word, Snackbar.LENGTH_LONG).show();
+        long groupId = getIntent().getLongExtra(EXTRA_GROUP_ID, -1L);
+        vm.wordsByGroup(groupId).observe(this, ws -> {
+            if (ws == null || ws.isEmpty()) {
+                Snackbar.make(tilAnswer, R.string.add_word, Snackbar.LENGTH_LONG).show();
                 finish();
-            } else {
-                index = 0;
-                showCard();
+                return;
             }
+            words.clear(); words.addAll(ws);
+            Collections.shuffle(words);
+            index = 0; showCurrent();
         });
 
-        btnReveal.setOnClickListener(v -> tvBack.setVisibility(View.VISIBLE));
-        btnNext.setOnClickListener(v -> { index++; showCard(); });
-        btnSpeak.setOnClickListener(v -> speak());
-
-        // TTS
         Prefs prefs = new Prefs(this);
         String tag = prefs.getTtsLang();
         tts = new TextToSpeech(this, s -> {
@@ -80,35 +76,72 @@ public class PracticeActivity extends AppCompatActivity {
                 ttsReady = (r != TextToSpeech.LANG_MISSING_DATA && r != TextToSpeech.LANG_NOT_SUPPORTED);
             }
         });
+
+        btnSpeak.setOnClickListener(v -> speak());
+        btnHelp.setOnClickListener(v -> reveal());
+        btnCheck.setOnClickListener(v -> check());
+        etAnswer.setOnEditorActionListener((tv, actionId, ev) -> {
+            if (actionId == EditorInfo.IME_ACTION_DONE) { check(); return true; }
+            return false;
+        });
     }
 
-    private void showCard() {
+    private void showCurrent() {
         if (words.isEmpty()) return;
-        current = words.get(index % words.size());
-        tvFront.setText(current.front);
-        tvBack.setText(current.back);
-        tvBack.setVisibility(View.GONE);
-        btnSpeak.setText(current.front);
+        if (index >= words.size()) index = 0;
+        current = words.get(index);
+        etPrompt.setText(current.back);
+        etAnswer.setText("");
+        tilAnswer.setError(null);
+        etAnswer.requestFocus();
+    }
+
+    private void check() {
+        if (current == null) return;
+        String user = norm(etAnswer.getText());
+        if (TextUtils.isEmpty(user)) { tilAnswer.setError(getString(R.string.word_front)); return; }
+        boolean ok = false;
+        for (String variant : splitVariants(current.front)) {
+            if (equalsSoft(user, norm(variant))) { ok = true; break; }
+            String woArticle = dropGermanArticle(norm(variant));
+            if (!woArticle.isEmpty() && equalsSoft(user, woArticle)) { ok = true; break; }
+        }
+        if (ok) { index++; showCurrent(); }
+        else    { tilAnswer.setError(getString(R.string.title_correct)); }
+    }
+
+    private void reveal() {
+        if (current == null) return;
+        etAnswer.setText(current.front);
+        Editable e = etAnswer.getText();
+        if (e != null) etAnswer.setSelection(e.length());
+        tilAnswer.setError(null);
         speak();
     }
 
     private void speak() {
         if (!ttsReady || current == null) return;
-        if (Build.VERSION.SDK_INT >= 21) {
-            tts.speak(current.front, TextToSpeech.QUEUE_FLUSH, null, "practice");
-        } else {
-            //noinspection deprecation
-            tts.speak(current.front, TextToSpeech.QUEUE_FLUSH, null);
-        }
+        if (Build.VERSION.SDK_INT >= 21) tts.speak(current.front, TextToSpeech.QUEUE_FLUSH, null, "practice");
+        else /*noinspection deprecation*/ tts.speak(current.front, TextToSpeech.QUEUE_FLUSH, null);
     }
 
+    private static String norm(CharSequence s) {
+        if (s == null) return "";
+        String out = Normalizer.normalize(s.toString(), Normalizer.Form.NFKC).trim();
+        return out.replaceAll("\\s+", " ");
+    }
+    private static String[] splitVariants(String s) { return s == null ? new String[0] : s.split("[/;|,]"); }
+    private static boolean equalsSoft(String a, String b) { return a.equalsIgnoreCase(b); }
+    private static String dropGermanArticle(String s) {
+        String t = s.toLowerCase(Locale.ROOT).trim();
+        if (t.startsWith("der ")) return s.substring(4).trim();
+        if (t.startsWith("die ")) return s.substring(4).trim();
+        if (t.startsWith("das ")) return s.substring(4).trim();
+        return s;
+    }
     private static Locale toLocale(String tag) {
         if (tag == null) return Locale.ENGLISH;
         switch (tag) { case "de": return Locale.GERMAN; case "fr": return Locale.FRENCH; default: return Locale.ENGLISH; }
     }
-
-    @Override protected void onDestroy() {
-        if (tts != null) { tts.stop(); tts.shutdown(); }
-        super.onDestroy();
-    }
+    @Override protected void onDestroy() { if (tts != null) { tts.stop(); tts.shutdown(); } super.onDestroy(); }
 }

@@ -1,21 +1,19 @@
-// com/example/easylearnlanguage/data/GroupRepository.java
 package com.example.easylearnlanguage.data;
 
 import android.content.Context;
 import androidx.lifecycle.LiveData;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.*;
 
 public class GroupRepository {
     private final GroupDao groupDao;
-    private final WordDao wordDao;           // ДОДАНО
+    private final WordDao  wordDao;
     private final ExecutorService io = Executors.newSingleThreadExecutor();
 
     public GroupRepository(Context c){
         AppDatabase db = AppDatabase.get(c);
         groupDao = db.groupDao();
-        wordDao  = db.wordDao();             // ДОДАНО
+        wordDao  = db.wordDao();
     }
 
     public LiveData<List<Group>> observeAll(){ return groupDao.observeAll(); }
@@ -26,11 +24,9 @@ public class GroupRepository {
         );
     }
 
-    public void delete(Group g){
-        io.execute(() -> groupDao.delete(g));
-    }
+    public void delete(Group g){ io.execute(() -> groupDao.delete(g)); }
 
-    // Каскад: спочатку прибираємо слова групи, потім саму групу
+    // каскад: сначала слова группы, потом сама группа
     public void deleteCascade(Group g){
         io.execute(() -> {
             wordDao.clearForGroup(g.id);

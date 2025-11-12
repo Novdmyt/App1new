@@ -40,6 +40,8 @@
         <activity android:name=".ui.play.ModeSelectActivity" />
         <activity android:name=".ui.play.PracticeActivity" />
         <activity android:name=".ui.play.MatchActivity"/>
+        <activity android:name=".ui.word.DictionaryActivity" />
+
 
 
 

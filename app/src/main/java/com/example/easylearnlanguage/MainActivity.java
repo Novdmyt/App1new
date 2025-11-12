@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.easylearnlanguage.settings.SettingsActivity;
 import com.example.easylearnlanguage.temp.NewGroupActivity;
 import com.example.easylearnlanguage.ui.play.ModeSelectActivity;
+import com.example.easylearnlanguage.ui.word.DictionaryActivity;
 import com.example.easylearnlanguage.ui.word.WordsActivity;
 import com.google.android.material.card.MaterialCardView;
 
@@ -31,6 +32,10 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, NewGroupActivity.class))
         );
 
+        btnSettings.setOnClickListener(v ->
+                startActivity(new Intent(this, com.example.easylearnlanguage.settings.SettingsActivity.class))
+        );
+
         // "Нові слова" – вибір групи, потім WordsActivity
         tileNewWords.setOnClickListener(v -> {
             Intent it = new Intent(this, NewGroupActivity.class);
@@ -43,13 +48,9 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(this, ModeSelectActivity.class))
         );
 
-        // Поки що заглушка
-        View.OnClickListener comingSoon = vv ->
-                Toast.makeText(this, R.string.coming_soon, Toast.LENGTH_SHORT).show();
-        tileCorrect.setOnClickListener(comingSoon);
-
-        btnSettings.setOnClickListener(v ->
-                startActivity(new Intent(this, SettingsActivity.class))
+        //Словник
+        tileCorrect.setOnClickListener(v ->
+                startActivity(new Intent(this, DictionaryActivity.class))
         );
     }
 }

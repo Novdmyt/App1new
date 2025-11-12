@@ -1,26 +1,19 @@
 package com.example.easylearnlanguage.data;
 
+import androidx.annotation.NonNull;
 import androidx.room.Entity;
-import androidx.room.Index;
 import androidx.room.PrimaryKey;
 
-@Entity(
-        tableName = "words",
-        indices = {@Index("groupId")}
-)
+@Entity(tableName = "words")
 public class Word {
-    @PrimaryKey(autoGenerate = true)
-    public long id;
+    @PrimaryKey(autoGenerate = true) public long id;
+    public long groupId;
+    @NonNull public String front; // иностранное слово (можно с артиклем)
+    @NonNull public String back;  // перевод
 
-    public long groupId;    // FK на study_groups.id
-    public String front;    // іноземне слово / речення
-    public String back;     // переклад
-    public long addedAt;    // System.currentTimeMillis()
-
-    public Word(long groupId, String front, String back, long addedAt) {
+    public Word(long groupId, @NonNull String front, @NonNull String back) {
         this.groupId = groupId;
         this.front = front;
-        this.back = back;
-        this.addedAt = addedAt;
+        this.back  = back;
     }
 }

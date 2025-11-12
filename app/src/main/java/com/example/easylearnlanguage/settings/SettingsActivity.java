@@ -15,7 +15,6 @@ import com.google.android.material.textfield.MaterialAutoCompleteTextView;
 public class SettingsActivity extends AppCompatActivity {
 
     private Prefs prefs;
-    private MaterialAutoCompleteTextView dropLang;
     private View root;
 
     @Override
@@ -26,17 +25,14 @@ public class SettingsActivity extends AppCompatActivity {
         prefs = new Prefs(this);
         root  = findViewById(android.R.id.content);
 
-        // Toolbar back
+        // Toolbar
         MaterialToolbar bar = findViewById(R.id.topAppBar);
-        setSupportActionBar(bar);
         bar.setNavigationOnClickListener(v ->
                 getOnBackPressedDispatcher().onBackPressed()
         );
 
-        // ---------------------------
-        // 1) Language (UI)
-        // ---------------------------
-        dropLang = findViewById(R.id.drop_lang);
+        // -------- 1) Мова інтерфейсу --------
+        MaterialAutoCompleteTextView dropLang = findViewById(R.id.drop_lang);
 
         String[] uiLabels = new String[] {
                 getString(R.string.system_default),
@@ -68,9 +64,7 @@ public class SettingsActivity extends AppCompatActivity {
             restartWithoutAnimation();
         });
 
-        // ---------------------------
-        // 2) Audio voice (TTS)
-        // ---------------------------
+        // -------- 2) Мова озвучки (TTS) --------
         MaterialAutoCompleteTextView dropTts = findViewById(R.id.drop_tts_voice);
 
         String[] voiceLabels = new String[] {
@@ -88,8 +82,6 @@ public class SettingsActivity extends AppCompatActivity {
         dropTts.setText(voiceLabels[vIdx], false);
 
         dropTts.setOnItemClickListener((p, v, pos, id) -> prefs.setTtsLang(voiceTags[pos]));
-
-        // ВАЖНО: блока "Choices count" больше нет
     }
 
     private void restartWithoutAnimation() {

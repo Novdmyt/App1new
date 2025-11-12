@@ -34,6 +34,7 @@
     <string name="correct">Richtig!</string>
     <string name="incorrect">Versuch’s nochmal</string>
 
+    <string name="check_answer">Überprüfen</string>
     <string name="need_more_words">Потрібно щонайменше %1$d слів, зараз %2$d</string>
     <string name="add_word1">Додати слова</string>
 
@@ -56,5 +57,7 @@
     <string name="shuffle">Aufsehen</string>
     <string name="done">Erledigt!</string>
     <string name="title_groups">Goupe</string>
+    <string name="title_dictionary">Wörterbuch</string>
+    <string name="search_hint">Suche nach einem Wort oder einer Übersetzung</string>
 
 </resources>
