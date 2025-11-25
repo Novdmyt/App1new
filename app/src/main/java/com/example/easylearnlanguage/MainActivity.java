@@ -52,5 +52,6 @@ public class MainActivity extends AppCompatActivity {
         tileCorrect.setOnClickListener(v ->
                 startActivity(new Intent(this, DictionaryActivity.class))
         );
+
     }
 }

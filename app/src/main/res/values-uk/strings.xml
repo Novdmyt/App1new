@@ -54,6 +54,9 @@
     <string name="word_deleted">Слово видалено</string>
     <string name="rename_word">Перейменування слова</string>
     <string name="word_exists">Таке слово вже є</string>
+    <string name="learnword">Вчити слова</string>
+    <string name="show_word_on_button">Показувати слово на кнопці</string>
+
 
 
 

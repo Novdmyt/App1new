@@ -49,6 +49,7 @@
 
 
 
+
     <string name="coming_soon">В розробці</string>
 
 
@@ -71,5 +72,7 @@
     <string name="title_dictionary">Dictionary</string>
     <string name="search_hint">Search for a word or translation</string>
     <string name="word_exists">Such a word exists</string>
+    <string name="learnword">Learn word</string>
+    <string name="show_word_on_button">Show word on button</string>
 
 </resources>

@@ -64,5 +64,8 @@
     <string name="delete">Löschen</string>
     <string name="word_deleted">Wort gelöscht</string>
     <string name="word_exists">Ein solches Wort existiert</string>
+    <string name="show_word_on_button">Показувати слово на кнопці</string>
+
+    <string name="learnword">Learn word</string>
 
 </resources>

@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+
 import com.example.easylearnlanguage.R;
 import com.example.easylearnlanguage.data.Word;
 import com.example.easylearnlanguage.settings.Prefs;
@@ -21,6 +22,9 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.color.MaterialColors;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.switchmaterial.SwitchMaterial;
+
+
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,8 +40,10 @@ public class MatchActivity extends AppCompatActivity {
 
     private RecyclerView listLeft, listRight;
     private MaterialButton btnRestart, btnShuffle;
+    private SwitchMaterial switchShowWord;
     private LeftAdapter leftAdapter;
     private RightAdapter rightAdapter;
+    private boolean showWordOnLeft = false;
 
     private final List<Word> leftWords = new ArrayList<>();
     private final List<Word> rightWords = new ArrayList<>();
@@ -63,6 +69,7 @@ public class MatchActivity extends AppCompatActivity {
         listRight = findViewById(R.id.list_right);
         btnRestart = findViewById(R.id.btn_restart);
         btnShuffle = findViewById(R.id.btn_shuffle);
+        switchShowWord = findViewById(R.id.switch_show_word);
 
         listLeft.setLayoutManager(new LinearLayoutManager(this));
         listRight.setLayoutManager(new LinearLayoutManager(this));
@@ -77,6 +84,18 @@ public class MatchActivity extends AppCompatActivity {
 
         btnRestart.setOnClickListener(v -> resetAll(false));
         btnShuffle.setOnClickListener(v -> resetAll(true));
+
+        leftAdapter.setShowWordOnButton(showWordOnLeft);
+
+        if (switchShowWord != null) {
+            switchShowWord.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                showWordOnLeft = isChecked;
+                leftAdapter.setShowWordOnButton(showWordOnLeft);
+            });
+        }
+
+        leftAdapter.setOnClick(this::onLeftClick);
+        rightAdapter.setOnClick(this::onRightClick);
 
         // data
         vm = new ViewModelProvider(this).get(WordsViewModel.class);
@@ -174,6 +193,7 @@ public class MatchActivity extends AppCompatActivity {
         rightAdapter.submit(rightWords, matched);
     }
 
+
     private static Locale toLocale(String tag) {
         if (tag == null) return Locale.ENGLISH;
         switch (tag) { case "de": return Locale.GERMAN; case "fr": return Locale.FRENCH; default: return Locale.ENGLISH; }
@@ -191,6 +211,7 @@ public class MatchActivity extends AppCompatActivity {
         private final Set<Long> matched = new HashSet<>();
         private int selected = -1;
         private int wrong = -1;
+        private boolean showWordOnButton = false;
         private OnPosClick onClick;
 
         void submit(List<Word> items, Set<Long> matchedIds) {
@@ -199,21 +220,56 @@ public class MatchActivity extends AppCompatActivity {
             selected = wrong = -1;
             notifyDataSetChanged();
         }
-        void setSelected(int pos){ selected = pos; wrong = -1; notifyDataSetChanged(); }
-        void markMatched(int pos, boolean m){ matched.add(data.get(pos).id); notifyItemChanged(pos); }
-        void flashWrong(int pos){ wrong = pos; notifyItemChanged(pos); }
-        void setOnClick(OnPosClick cb){ onClick = cb; }
 
-        @Override public LeftVH onCreateViewHolder(android.view.ViewGroup parent, int viewType) {
+        // включаем/выключаем показ иностранного слова вместо "Натисніть, щоб прослухати"
+        void setShowWordOnButton(boolean show) {
+            showWordOnButton = show;
+            notifyDataSetChanged();
+        }
+
+        void setSelected(int pos) {
+            selected = pos;
+            wrong = -1;
+            notifyDataSetChanged();
+        }
+
+        void markMatched(int pos, boolean m) {
+            matched.add(data.get(pos).id);
+            notifyItemChanged(pos);
+        }
+
+        void flashWrong(int pos) {
+            wrong = pos;
+            notifyItemChanged(pos);
+        }
+
+        void setOnClick(OnPosClick cb) {
+            onClick = cb;
+        }
+
+        @Override
+        public LeftVH onCreateViewHolder(android.view.ViewGroup parent, int viewType) {
             android.view.View v = android.view.LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.item_match_left, parent, false);
             return new LeftVH(v);
         }
-        @Override public void onBindViewHolder(LeftVH h, int pos) {
+
+        @Override
+        public void onBindViewHolder(LeftVH h, int pos) {
             Word w = data.get(pos);
             MaterialButton b = h.btn;
+
+            // нельзя нажимать уже найденные пары
             b.setEnabled(!matched.contains(w.id));
-            b.setText(R.string.tap_to_listen);
+
+            if (showWordOnButton) {
+                // показываем иностранное слово (front)
+                b.setText(w.front);
+            } else {
+                // только подсказка "Натисніть, щоб прослухати"
+                b.setText(R.string.tap_to_listen);
+            }
+
             b.setStrokeWidth(dp(h.btn, 1));
 
             if (matched.contains(w.id)) {
@@ -225,9 +281,16 @@ public class MatchActivity extends AppCompatActivity {
             } else {
                 resetTint(b);
             }
-            b.setOnClickListener(v -> { if (onClick!=null) onClick.onClick(h.getAdapterPosition()); });
+
+            b.setOnClickListener(v -> {
+                if (onClick != null) onClick.onClick(h.getAdapterPosition());
+            });
         }
-        @Override public int getItemCount(){ return data.size(); }
+
+        @Override
+        public int getItemCount() {
+            return data.size();
+        }
     }
 
     private static class RightAdapter extends RecyclerView.Adapter<RightVH> {

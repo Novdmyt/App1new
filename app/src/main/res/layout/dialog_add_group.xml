@@ -41,7 +41,10 @@
                 android:backgroundTint="@android:color/transparent"
                 app:strokeColor="@color/md_outline"
                 app:strokeWidth="2dp"
-                app:shapeAppearanceOverlay="@style/CircleShape" />
+                app:shapeAppearanceOverlay="@style/CircleShape"
+                app:checkedIcon="@drawable/ic_check_24"
+                app:checkedIconTint="?attr/colorPrimary"
+                app:checkedIconSize="20dp" />
 
             <!-- blue -->
             <com.google.android.material.button.MaterialButton
@@ -50,7 +53,10 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:backgroundTint="@color/blue"
-                app:shapeAppearanceOverlay="@style/CircleShape" />
+                app:shapeAppearanceOverlay="@style/CircleShape"
+                app:checkedIcon="@drawable/ic_check_24"
+                app:checkedIconTint="@android:color/white"
+                app:checkedIconSize="20dp" />
 
             <!-- yellow -->
             <com.google.android.material.button.MaterialButton
@@ -59,7 +65,10 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:backgroundTint="@color/yellow"
-                app:shapeAppearanceOverlay="@style/CircleShape" />
+                app:shapeAppearanceOverlay="@style/CircleShape"
+                app:checkedIcon="@drawable/ic_check_24"
+                app:checkedIconTint="@android:color/white"
+                app:checkedIconSize="20dp" />
 
             <!-- red -->
             <com.google.android.material.button.MaterialButton
@@ -68,7 +77,10 @@
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:backgroundTint="@color/red"
-                app:shapeAppearanceOverlay="@style/CircleShape" />
+                app:shapeAppearanceOverlay="@style/CircleShape"
+                app:checkedIcon="@drawable/ic_check_24"
+                app:checkedIconTint="@android:color/white"
+                app:checkedIconSize="20dp" />
 
             <!-- green -->
             <com.google.android.material.button.MaterialButton
@@ -76,39 +88,72 @@
                 style="@style/Widget.Material3.Button.IconButton"
                 android:layout_width="40dp"
                 android:layout_height="40dp"
-                android:contentDescription="@string/color_green"
                 android:backgroundTint="@color/green"
-                app:shapeAppearanceOverlay="@style/CircleShape" />
+                android:contentDescription="@string/color_green"
+                app:shapeAppearanceOverlay="@style/CircleShape"
+                app:checkedIcon="@drawable/ic_check_24"
+                app:checkedIconTint="@android:color/white"
+                app:checkedIconSize="20dp" />
+
+            <!-- purple -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnColorPurple"
                 style="@style/Widget.Material3.Button.IconButton"
-                android:layout_width="40dp" android:layout_height="40dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:backgroundTint="@color/purple"
-                app:shapeAppearanceOverlay="@style/CircleShape" />
+                app:shapeAppearanceOverlay="@style/CircleShape"
+                app:checkedIcon="@drawable/ic_check_24"
+                app:checkedIconTint="@android:color/white"
+                app:checkedIconSize="20dp" />
+
+            <!-- orange -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnColorOrange"
                 style="@style/Widget.Material3.Button.IconButton"
-                android:layout_width="40dp" android:layout_height="40dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:backgroundTint="@color/orange"
-                app:shapeAppearanceOverlay="@style/CircleShape" />
+                app:shapeAppearanceOverlay="@style/CircleShape"
+                app:checkedIcon="@drawable/ic_check_24"
+                app:checkedIconTint="@android:color/white"
+                app:checkedIconSize="20dp" />
+
+            <!-- teal -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnColorTeal"
                 style="@style/Widget.Material3.Button.IconButton"
-                android:layout_width="40dp" android:layout_height="40dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:backgroundTint="@color/teal"
-                app:shapeAppearanceOverlay="@style/CircleShape" />
+                app:shapeAppearanceOverlay="@style/CircleShape"
+                app:checkedIcon="@drawable/ic_check_24"
+                app:checkedIconTint="@android:color/white"
+                app:checkedIconSize="20dp" />
+
+            <!-- pink -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnColorPink"
                 style="@style/Widget.Material3.Button.IconButton"
-                android:layout_width="40dp" android:layout_height="40dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:backgroundTint="@color/pink"
-                app:shapeAppearanceOverlay="@style/CircleShape" />
+                app:shapeAppearanceOverlay="@style/CircleShape"
+                app:checkedIcon="@drawable/ic_check_24"
+                app:checkedIconTint="@android:color/white"
+                app:checkedIconSize="20dp" />
+
+            <!-- gray -->
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnColorGray"
                 style="@style/Widget.Material3.Button.IconButton"
-                android:layout_width="40dp" android:layout_height="40dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:backgroundTint="@color/gray"
-                app:shapeAppearanceOverlay="@style/CircleShape" />
+                app:shapeAppearanceOverlay="@style/CircleShape"
+                app:checkedIcon="@drawable/ic_check_24"
+                app:checkedIconTint="@android:color/white"
+                app:checkedIconSize="20dp" />
 
 
         </com.google.android.material.button.MaterialButtonToggleGroup>

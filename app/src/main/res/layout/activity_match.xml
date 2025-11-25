@@ -12,7 +12,16 @@
         android:layout_height="wrap_content"
         app:title="@string/training"
         app:navigationIcon="@drawable/ic_arrow_back_24"
-        app:titleCentered="true"/>
+        app:titleCentered="true" />
+
+    <!-- Переключатель: показывать ли иностранное слово вместо "Натисніть, щоб прослухати" -->
+    <com.google.android.material.switchmaterial.SwitchMaterial
+        android:id="@+id/switch_show_word"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:layout_marginTop="8dp"
+        android:text="@string/show_word_on_button" />
 
     <!-- две колонки списков -->
     <LinearLayout
@@ -58,6 +67,6 @@
             android:layout_marginStart="12dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/shuffle"/>
+            android:text="@string/shuffle" />
     </LinearLayout>
 </LinearLayout>

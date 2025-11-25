@@ -12,16 +12,22 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import android.content.res.ColorStateList;
+import android.graphics.drawable.Drawable;
+
+import androidx.appcompat.content.res.AppCompatResources;
+
+import com.google.android.material.button.MaterialButton;
+import com.google.android.material.button.MaterialButtonToggleGroup;
+
 
 import com.example.easylearnlanguage.R;
 import com.example.easylearnlanguage.data.Group;
 import com.example.easylearnlanguage.ui.group.GroupAdapter;
 import com.example.easylearnlanguage.ui.group.GroupViewModel;
 import com.example.easylearnlanguage.ui.play.MatchActivity;
-import com.example.easylearnlanguage.ui.play.PlayActivity;
 import com.example.easylearnlanguage.ui.play.PracticeActivity;
 import com.example.easylearnlanguage.ui.word.WordsActivity;
 import com.google.android.material.appbar.MaterialToolbar;
@@ -50,8 +56,7 @@ public class NewGroupActivity extends AppCompatActivity {
         MaterialToolbar bar = findViewById(R.id.bar);
         bar.setNavigationOnClickListener(v -> getOnBackPressedDispatcher().onBackPressed());
         int title = R.string.title_groups;
-        if (PlayActivity.class.getName().equals(targetClassName))          title = R.string.title_play;
-        else if (PracticeActivity.class.getName().equals(targetClassName)) title = R.string.practice;
+        if (PracticeActivity.class.getName().equals(targetClassName)) title = R.string.practice;
         else if (MatchActivity.class.getName().equals(targetClassName))    title = R.string.training;
         bar.setTitle(title);
 
@@ -91,8 +96,6 @@ public class NewGroupActivity extends AppCompatActivity {
             Intent it = new Intent(this, target);
 
             // передаємо дані для всіх режимів
-            it.putExtra(PlayActivity.EXTRA_GROUP_ID, g.id);
-            it.putExtra(PlayActivity.EXTRA_GROUP_TITLE, g.title);
             it.putExtra(PracticeActivity.EXTRA_GROUP_ID, g.id);
             it.putExtra(PracticeActivity.EXTRA_GROUP_TITLE, g.title);
             it.putExtra(MatchActivity.EXTRA_GROUP_ID, g.id);
@@ -109,13 +112,58 @@ public class NewGroupActivity extends AppCompatActivity {
 
     /** Діалог створення групи (з твоїм вибором кольорів-кружків) */
     private void showAddDialog() {
+        // надуваем layout диалога
         View view = LayoutInflater.from(this).inflate(R.layout.dialog_add_group, null, false);
-        EditText etTitle = view.findViewById(R.id.etTitle);
-        com.google.android.material.button.MaterialButtonToggleGroup groupColors =
-                view.findViewById(R.id.groupColors);
 
+        EditText etTitle = view.findViewById(R.id.etTitle);
+        MaterialButtonToggleGroup groupColors = view.findViewById(R.id.groupColors);
+
+        // сами кнопки-кружки
+        MaterialButton btnColorNone   = view.findViewById(R.id.btnColorNone);
+        MaterialButton btnColorBlue   = view.findViewById(R.id.btnColorBlue);
+        MaterialButton btnColorYellow = view.findViewById(R.id.btnColorYellow);
+        MaterialButton btnColorRed    = view.findViewById(R.id.btnColorRed);
+        MaterialButton btnColorGreen  = view.findViewById(R.id.btnColorGreen);
+        MaterialButton btnColorPurple = view.findViewById(R.id.btnColorPurple);
+        MaterialButton btnColorOrange = view.findViewById(R.id.btnColorOrange);
+        MaterialButton btnColorTeal   = view.findViewById(R.id.btnColorTeal);
+        MaterialButton btnColorPink   = view.findViewById(R.id.btnColorPink);
+        MaterialButton btnColorGray   = view.findViewById(R.id.btnColorGray);
+
+        // одна общая иконка-галочка
+        Drawable checkIcon = AppCompatResources.getDrawable(this, R.drawable.ic_check_24);
+
+        // массив всех цветовых кнопок
+        MaterialButton[] colorButtons = new MaterialButton[]{
+                btnColorNone, btnColorBlue, btnColorYellow, btnColorRed,
+                btnColorGreen, btnColorPurple, btnColorOrange,
+                btnColorTeal, btnColorPink, btnColorGray
+        };
+
+        // слушатель переключения кнопок в группе
+        groupColors.addOnButtonCheckedListener((group, checkedId, isChecked) -> {
+            // сперва убираем иконку у всех
+            for (MaterialButton b : colorButtons) {
+                if (b != null) {
+                    b.setIcon(null);
+                }
+            }
+
+            // если есть выбранная кнопка — ставим галочку
+            if (isChecked) {
+                MaterialButton checked = group.findViewById(checkedId);
+                if (checked != null && checkIcon != null) {
+                    checked.setIcon(checkIcon);
+                    checked.setIconTint(ColorStateList.valueOf(0xFFFFFFFF)); // белая галочка
+                    checked.setIconPadding(0);
+                }
+            }
+        });
+
+        // начальное состояние — "без цвета"
         groupColors.check(R.id.btnColorNone);
 
+        // диалог создания группы
         new AlertDialog.Builder(this)
                 .setTitle(R.string.title_new_group)
                 .setView(view)
@@ -126,18 +174,30 @@ public class NewGroupActivity extends AppCompatActivity {
                         return;
                     }
 
-                    int pickedColor = 0; // none
+                    int pickedColor = 0; // 0 = без цвета
                     int checkedId = groupColors.getCheckedButtonId();
-                    if (checkedId == R.id.btnColorBlue)    pickedColor = ContextCompat.getColor(this, R.color.blue);
-                    else if (checkedId == R.id.btnColorYellow) pickedColor = ContextCompat.getColor(this, R.color.yellow);
-                    else if (checkedId == R.id.btnColorRed)    pickedColor = ContextCompat.getColor(this, R.color.red);
-                    else if (checkedId == R.id.btnColorGreen)  pickedColor = ContextCompat.getColor(this, R.color.green);
-                    else if (checkedId == R.id.btnColorPurple) pickedColor = ContextCompat.getColor(this, R.color.purple);
-                    else if (checkedId == R.id.btnColorOrange) pickedColor = ContextCompat.getColor(this, R.color.orange);
-                    else if (checkedId == R.id.btnColorTeal)   pickedColor = ContextCompat.getColor(this, R.color.teal);
-                    else if (checkedId == R.id.btnColorPink)   pickedColor = ContextCompat.getColor(this, R.color.pink);
-                    else if (checkedId == R.id.btnColorGray)   pickedColor = ContextCompat.getColor(this, R.color.gray);
 
+                    if (checkedId == R.id.btnColorBlue) {
+                        pickedColor = ContextCompat.getColor(this, R.color.blue);
+                    } else if (checkedId == R.id.btnColorYellow) {
+                        pickedColor = ContextCompat.getColor(this, R.color.yellow);
+                    } else if (checkedId == R.id.btnColorRed) {
+                        pickedColor = ContextCompat.getColor(this, R.color.red);
+                    } else if (checkedId == R.id.btnColorGreen) {
+                        pickedColor = ContextCompat.getColor(this, R.color.green);
+                    } else if (checkedId == R.id.btnColorPurple) {
+                        pickedColor = ContextCompat.getColor(this, R.color.purple);
+                    } else if (checkedId == R.id.btnColorOrange) {
+                        pickedColor = ContextCompat.getColor(this, R.color.orange);
+                    } else if (checkedId == R.id.btnColorTeal) {
+                        pickedColor = ContextCompat.getColor(this, R.color.teal);
+                    } else if (checkedId == R.id.btnColorPink) {
+                        pickedColor = ContextCompat.getColor(this, R.color.pink);
+                    } else if (checkedId == R.id.btnColorGray) {
+                        pickedColor = ContextCompat.getColor(this, R.color.gray);
+                    }
+
+                    // создаём группу с выбранным цветом
                     vm.add(title, "", "", pickedColor);
                 })
                 .setNegativeButton(android.R.string.cancel, null)
